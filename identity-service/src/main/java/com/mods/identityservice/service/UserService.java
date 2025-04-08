@@ -40,7 +40,10 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         log.info("Create profile for user {}", savedUser.getId());
-        profileClient.createUser(convertToProfileCreationRequest(request));
+        ProfileCreationRequest profile = convertToProfileCreationRequest(request);
+        profile.setUserId(savedUser.getId());
+        profileClient.createUser(profile);
+
         return convertToUserResponse(savedUser);
     }
 

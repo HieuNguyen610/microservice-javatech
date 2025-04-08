@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "profile-service", url = "http://localhost:8081/profile")
+@FeignClient(name = "profile-service", url = "${app.service.profile}")
 public interface ProfileClient {
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
