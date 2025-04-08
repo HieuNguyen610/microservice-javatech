@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,6 +34,10 @@ public class UserProfileService {
         UserProfile userProfile = userProfileRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User profile id = " + userId + " not found"));
         return userProfileMapper.toUserProfileResponse(userProfile);
+    }
+
+    public List<UserProfileResponse> getAllProfiles() {
+        return userProfileMapper.toUserProfileResponseList(userProfileRepository.findAll());
     }
 
 }
