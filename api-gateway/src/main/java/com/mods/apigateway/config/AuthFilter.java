@@ -35,7 +35,10 @@ public class AuthFilter implements GlobalFilter, Ordered{
         log.info("Token : {}", token);
         // verify token via identity-service
 
-        identityService.introspect(token);
+        identityService.introspect(token).subscribe(
+                response -> {
+                    log.info("Result: {}", response.getData().isValid());
+                });
         return chain.filter(exchange);
     }
 

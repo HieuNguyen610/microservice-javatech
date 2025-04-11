@@ -38,10 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService {
     UserRepository userRepository;
 
-    @NonFinal
-    @Value("${jwt.signerKey}")
-    protected String signerKey;
-
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         boolean isValid = true;
