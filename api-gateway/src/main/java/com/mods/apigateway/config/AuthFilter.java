@@ -1,5 +1,7 @@
 package com.mods.apigateway.config;
 
+import com.mods.apigateway.service.IdentityService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -16,7 +18,11 @@ import java.util.List;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class AuthFilter implements GlobalFilter, Ordered{
+
+    private final IdentityService identityService;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info("Enter auth filter...");
@@ -29,6 +35,7 @@ public class AuthFilter implements GlobalFilter, Ordered{
         log.info("Token : {}", token);
         // verify token via identity-service
 
+        identityService.introspect(token);
         return chain.filter(exchange);
     }
 

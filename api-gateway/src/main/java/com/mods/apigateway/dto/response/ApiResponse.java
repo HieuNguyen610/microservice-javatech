@@ -1,8 +1,7 @@
-package com.mods.identityservice.dto.response;
+package com.mods.apigateway.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 
 @Getter
 @Setter
