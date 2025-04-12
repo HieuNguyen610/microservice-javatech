@@ -2,9 +2,11 @@ package com.mods.identityservice.controller;
 
 import java.text.ParseException;
 
+import com.mods.identityservice.dto.request.AuthenticationRequest;
 import com.mods.identityservice.dto.request.IntrospectRequest;
-import com.mods.identityservice.dto.response.ApiResponse;
-import com.mods.identityservice.dto.response.IntrospectResponse;
+import com.mods.identityservice.dto.request.LoginRequest;
+import com.mods.identityservice.dto.response.*;
+import com.mods.identityservice.entity.User;
 import com.mods.identityservice.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +31,16 @@ public class AuthenticationController {
             throws ParseException, JOSEException {
         var result = authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder().data(result).build();
+    }
+
+    @PostMapping("/login")
+    ApiResponse<UserResponse> login(@RequestBody LoginRequest request) {
+        return ApiResponse.<UserResponse>builder().data(authenticationService.login(request)).build();
+    }
+
+    @PostMapping("/token")
+    ApiResponse<AuthenticationResponse> token(@RequestBody AuthenticationRequest request) throws ParseException, JOSEException { //
+        return ApiResponse.<AuthenticationResponse>builder().data(authenticationService.authenticate(request)).build();
     }
 
 

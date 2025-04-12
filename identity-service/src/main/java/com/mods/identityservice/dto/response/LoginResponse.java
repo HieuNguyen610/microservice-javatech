@@ -1,4 +1,4 @@
-package com.mods.identityservice.dto.request;
+package com.mods.identityservice.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationRequest {
-    private String username;
-    private String password;
+public class LoginResponse {
+    boolean authenticated;
 }
