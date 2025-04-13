@@ -18,6 +18,8 @@ import com.mods.identityservice.dto.response.UserResponse;
 import com.mods.identityservice.entity.User;
 import com.mods.identityservice.exceptions.AppException;
 import com.mods.identityservice.repository.UserRepository;
+import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
+import com.nimbusds.jwt.proc.JWTClaimsSetVerifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,12 +45,17 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService {
     UserRepository userRepository;
     ObjectMapper objectMapper;
+    private final String SIGN_KEY ="12345678901234567890123456789012";
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
-        boolean isValid = true;
+        JWSVerifier jwtClaimsSetVerifier = new MACVerifier(SIGN_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        boolean isValid = signedJWT.verify(jwtClaimsSetVerifier);
+        Date expired = signedJWT.getJWTClaimsSet().getExpirationTime();
+        boolean isNotExpired = expired.before(new Date());
 
-        return IntrospectResponse.builder().valid(isValid).build();
+        return IntrospectResponse.builder().valid(isValid && isNotExpired).build();
     }
 
     public UserResponse login(LoginRequest request) {
@@ -89,7 +96,7 @@ public class AuthenticationService {
 
         try {
             // ky
-            signedJWT.sign(new MACSigner("12345678901234567890123456789012".getBytes()));
+            signedJWT.sign(new MACSigner(SIGN_KEY.getBytes()));
             return signedJWT.serialize();
         } catch (JOSEException e) {
             log.error("Error while signing JWT", e);
